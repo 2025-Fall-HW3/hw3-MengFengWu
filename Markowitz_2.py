@@ -51,7 +51,7 @@ class MyPortfolio:
     NOTE: You can modify the initialization function
     """
 
-    def __init__(self, price, exclude, lookback=50, gamma=0):
+    def __init__(self, price, exclude, lookback=16, gamma=0):
         self.price = price
         self.returns = price.pct_change().fillna(0)
         self.exclude = exclude
@@ -72,10 +72,10 @@ class MyPortfolio:
         """
         mean_ret = self.returns[assets].rolling(window=self.lookback).mean()
         std_ret = self.returns[assets].rolling(window=self.lookback).std()
-        raw_weights = mean_ret / (std_ret + 1e-8)
+        raw_weights = mean_ret
         raw_weights[raw_weights < 0] = 0
         row_sum = raw_weights.sum(axis=1)
-        weights = raw_weights.div(row_sum, axis=0)
+        weights = raw_weights.div(row_sum, axis=0).shift(1) # avoid look ahead
         self.portfolio_weights[assets] = weights
         """
         TODO: Complete Task 4 Above
