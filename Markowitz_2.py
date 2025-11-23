@@ -70,8 +70,13 @@ class MyPortfolio:
         """
         TODO: Complete Task 4 Below
         """
-        
-        
+        mean_ret = self.returns[assets].rolling(window=self.lookback).mean()
+        std_ret = self.returns[assets].rolling(window=self.lookback).std()
+        raw_weights = mean_ret / (std_ret + 1e-8)
+        raw_weights[raw_weights < 0] = 0
+        row_sum = raw_weights.sum(axis=1)
+        weights = raw_weights.div(row_sum, axis=0)
+        self.portfolio_weights[assets] = weights
         """
         TODO: Complete Task 4 Above
         """
